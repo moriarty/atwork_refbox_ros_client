@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package>
   <name>at_work_robot_example_ros</name>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
   <description>
-    at_work_robot_example_ros contains example code for a ROS based robot to 
+    at_work_robot_example_ros contains example code for a ROS based robot to
     communicate with the RoCKIn@Work Central Factory Hub and the Networked
-    devices inside of the RoCKIn testbed. 
+    devices inside of the RoCKIn testbed.
   </description>
   <maintainer email="shehzad.ahmed@smail.inf.h-brs.de">Shehzad Ahmed</maintainer>
   <maintainer email="alexander.moriarty@brsu.de">Alexander Moriarty</maintainer>
-  <license>GPLv2</license>
+  <license>GPLv3</license>
 
   <url>http://thewiki.rockinrobotchallenge.eu/index.php?title=Robot_Setup_Work</url>
   <author>Alexander Moriarty</author>
@@ -19,8 +19,10 @@
   <build_depend>roscpp</build_depend>
   <build_depend>rockin_msgs</build_depend>
   <build_depend>protobuf_comm</build_depend>
+  <build_depend>message_generation</build_depend>
 
   <run_depend>roscpp</run_depend>
   <run_depend>rockin_msgs</run_depend>
   <run_depend>protobuf_comm</run_depend>
+  <run_depend>message_runtime</run_depend>
 </package>
