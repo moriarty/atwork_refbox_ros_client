@@ -20,9 +20,11 @@
 
 //publisher
 #include <at_work_robot_example_ros/AttentionMessage.h>
-
-//subscribe
-#include <at_work_robot_example_ros/CameraControl.h>
+#include <at_work_robot_example_ros/BenchmarkState.h>
+#include <at_work_robot_example_ros/TriggeredConveyorBeltStatus.h>
+#include <at_work_robot_example_ros/DrillingMachineStatus.h>
+#include <at_work_robot_example_ros/Inventory.h>
+#include <at_work_robot_example_ros/OrderInfo.h>
 
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
@@ -133,7 +135,17 @@ class RobotExampleROS
         /**
          * Publisher to publish attenetion messages.
          */
-        ros::Publisher attention_message_pub;
+        ros::Publisher attention_message_pub_;
+
+        ros::Publisher benchmark_state_pub_;
+
+        ros::Publisher drill_machine_status_pub_;
+
+        ros::Publisher inventory_pub_;
+
+        ros::Publisher order_info_pub_;
+
+        ros::Publisher conveyor_belt_status_pub_;
 
         /**
          * Parameter to check if refbox is running on local or another machine.
