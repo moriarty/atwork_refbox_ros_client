@@ -146,9 +146,9 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
     if ((am = std::dynamic_pointer_cast<AttentionMessage>(msg))) {
 
         at_work_robot_example_ros::AttentionMessage attention_msg;
-        attention_msg.message      = am->message();
-        attention_msg.time_to_show = am->time_to_show();
-        attention_msg.team         = am->team();
+        attention_msg.message.data      = am->message();
+        attention_msg.time_to_show.data = am->time_to_show();
+        attention_msg.team.data         = am->team();
         attention_message_pub.publish(attention_msg);
     }
 }

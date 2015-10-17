@@ -1,4 +1,3 @@
-string message
-float32 time_to_show
-string team
-
+std_msgs/String message
+std_msgs/Float32 time_to_show
+std_msgs/String team
