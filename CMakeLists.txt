@@ -8,6 +8,8 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
       roscpp
       protobuf_comm
       rockin_msgs
+      std_msgs
+      geometry_msgs
       message_generation
   )
 
@@ -23,11 +25,24 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
   add_message_files(FILES
     AttentionMessage.msg
     CameraControl.msg
+    BenchmarkState.msg
+    BenchmarkFeedback.msg
+    DrillingMachineCommand.msg
+    DrillingMachineStatus.msg
+    Inventory.msg
+    Item.msg
+    LocationIdentifier.msg
+    ObjectIdentifier.msg
+    Order.msg
+    OrderInfo.msg
+    TriggeredConveyorBeltStatus.msg
+    TriggeredConveyorBeltCommand.msg
   )
 
   generate_messages(
     DEPENDENCIES
       std_msgs
+      geometry_msgs
   )
 
   catkin_package(
