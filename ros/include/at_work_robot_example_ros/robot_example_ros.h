@@ -6,7 +6,6 @@
 #include <rockin_msgs/BeaconSignal.pb.h>
 #include <rockin_msgs/BenchmarkState.pb.h>
 #include <rockin_msgs/BenchmarkFeedback.pb.h>
-#include <rockin_msgs/Camera.pb.h>
 #include <rockin_msgs/ConveyorBelt.pb.h>
 #include <rockin_msgs/DrillingMachine.pb.h>
 #include <rockin_msgs/Inventory.pb.h>
@@ -99,14 +98,6 @@ class RobotExampleROS
         void handleMessage(boost::asio::ip::udp::endpoint &sender,
                             uint16_t component_id, uint16_t msg_type,
                             std::shared_ptr<google::protobuf::Message> msg);
-        /**
-         * Example for a send command
-         *
-         * This is the subscriber to control the quality control camera.
-         * Use subscriber or Action server/client to send commands to the refbox
-         */
-         
-        void cameraControlCB(at_work_robot_example_ros::CameraControl msg);
 
     private:
         /**
@@ -143,11 +134,6 @@ class RobotExampleROS
          * Publisher to publish attenetion messages.
          */
         ros::Publisher attention_message_pub;
-
-        /**
-         * Subscriber to control camera over network through ref box.
-         */
-        ros::Subscriber camera_conrol_sub;
 
         /**
          * Parameter to check if refbox is running on local or another machine.

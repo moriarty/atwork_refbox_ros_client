@@ -12,10 +12,6 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
     attention_message_pub = nh_.advertise<at_work_robot_example_ros::AttentionMessage> (
                             "attention_message", 10);
 
-    //Subscriber
-    camera_conrol_sub = nh_.subscribe<at_work_robot_example_ros::CameraControl>(
-                        "camera_control", 1000, &RobotExampleROS::cameraControlCB, this);
-
     initializeRobot();
 }
 
@@ -151,13 +147,4 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
         attention_msg.team.data         = am->team();
         attention_message_pub.publish(attention_msg);
     }
-}
-
- 
-void RobotExampleROS::cameraControlCB(at_work_robot_example_ros::CameraControl msg)
-{
-    //create a new message
-    std::shared_ptr<CameraCommand> cam_control(new CameraCommand);
-    //send the Message over team peer
-    peer_team_->send(cam_control);
 }
