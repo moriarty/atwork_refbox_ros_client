@@ -24,7 +24,6 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
 
   add_message_files(FILES
     AttentionMessage.msg
-    CameraControl.msg
     BenchmarkState.msg
     BenchmarkFeedback.msg
     DrillingMachineCommand.msg
@@ -37,6 +36,7 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
     OrderInfo.msg
     TriggeredConveyorBeltStatus.msg
     TriggeredConveyorBeltCommand.msg
+    BenchmarkScenario.msg
   )
 
   generate_messages(
