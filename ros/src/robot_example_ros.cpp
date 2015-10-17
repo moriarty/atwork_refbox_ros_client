@@ -67,10 +67,15 @@ void RobotExampleROS::initializeRobot()
     message_register.add_message_type<AttentionMessage>();
     message_register.add_message_type<BeaconSignal>();
     message_register.add_message_type<BenchmarkState>();
+    message_register.add_message_type<BenchmarkFeedback>();
     message_register.add_message_type<Inventory>();
     message_register.add_message_type<OrderInfo>();
     message_register.add_message_type<RobotInfo>();
     message_register.add_message_type<VersionInfo>();
+    message_register.add_message_type<DrillingMachineStatus>();
+    message_register.add_message_type<TriggeredConveyorBeltStatus>();
+    message_register.add_message_type<DrillingMachineCommand>();
+    message_register.add_message_type<TriggeredConveyorBeltCommand>();
 
     //create team peer and linked to internal message handler
     if (remote_refbox_) {
