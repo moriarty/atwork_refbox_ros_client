@@ -1,5 +1,5 @@
 # Time since benchmark start
-std_msgs/Time   benchmark_time
+std_msgs/Time benchmark_time
 
 # Current benchmark state
 std_msgs/UInt64  state
@@ -8,12 +8,10 @@ std_msgs/UInt64  state
 std_msgs/UInt64  phase
 
 # Current benchmark scenario
-std_msgs/UInt64 benchmark_type
-std_msgs/UInt32 benchmark_type_id
-std_msgs/String benchmark_description
+BenchmarkScenario scenario
 
 # Name of all known teams
-std_msgs/String known_teams
+std_msgs/String[] known_teams
 
 # Name of teams which are currently connected to the RefBox
-std_msgs/String connected_teams
+std_msgs/String[] connected_teams

@@ -1,0 +1,3 @@
+std_msgs/UInt64 benchmark_type
+std_msgs/UInt32 benchmark_type_id
+std_msgs/String benchmark_description
