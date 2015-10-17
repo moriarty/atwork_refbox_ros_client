@@ -8,9 +8,7 @@
 #include <rockin_msgs/BenchmarkFeedback.pb.h>
 #include <rockin_msgs/Camera.pb.h>
 #include <rockin_msgs/ConveyorBelt.pb.h>
-#include <rockin_msgs/CompressedImage.pb.h>
 #include <rockin_msgs/DrillingMachine.pb.h>
-#include <rockin_msgs/Image.pb.h>
 #include <rockin_msgs/Inventory.pb.h>
 #include <rockin_msgs/Order.pb.h>
 #include <rockin_msgs/Pose3D.pb.h>

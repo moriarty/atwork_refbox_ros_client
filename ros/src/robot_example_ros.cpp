@@ -71,7 +71,6 @@ void RobotExampleROS::initializeRobot()
     message_register.add_message_type<AttentionMessage>();
     message_register.add_message_type<BeaconSignal>();
     message_register.add_message_type<BenchmarkState>();
-    message_register.add_message_type<CompressedImage>();
     message_register.add_message_type<Inventory>();
     message_register.add_message_type<OrderInfo>();
     message_register.add_message_type<RobotInfo>();
