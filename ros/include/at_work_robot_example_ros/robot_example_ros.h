@@ -26,6 +26,10 @@
 #include <at_work_robot_example_ros/Inventory.h>
 #include <at_work_robot_example_ros/OrderInfo.h>
 
+#include <at_work_robot_example_ros/BenchmarkFeedback.h>
+#include <at_work_robot_example_ros/TriggeredConveyorBeltCommand.h>
+#include <at_work_robot_example_ros/DrillingMachineCommand.h>
+
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
 #include <unistd.h>
@@ -101,6 +105,15 @@ class RobotExampleROS
                             uint16_t component_id, uint16_t msg_type,
                             std::shared_ptr<google::protobuf::Message> msg);
 
+
+        void DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg);
+
+
+        void TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::TriggeredConveyorBeltCommand msg);
+
+
+        void BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg);
+
     private:
         /**
          * ROS node handle.
@@ -133,7 +146,7 @@ class RobotExampleROS
         std::string team_name_;
 
         /**
-         * Publisher to publish attenetion messages.
+         * Publishers
          */
         ros::Publisher attention_message_pub_;
 
@@ -146,6 +159,15 @@ class RobotExampleROS
         ros::Publisher order_info_pub_;
 
         ros::Publisher conveyor_belt_status_pub_;
+
+        /**
+         * Subscribers
+         */
+        ros::Subscriber drillling_machine_command_sub_;
+
+        ros::Subscriber conveyor_belt_command_sub_;
+
+        ros::Subscriber benchmark_feedback_sub_;
 
         /**
          * Parameter to check if refbox is running on local or another machine.

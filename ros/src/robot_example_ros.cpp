@@ -8,7 +8,7 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
 {
     readParameters();
 
-    //Publisher
+    //Publishers
     attention_message_pub_ = nh_.advertise<at_work_robot_example_ros::AttentionMessage> (
                             "attention_message", 10);
 
@@ -25,6 +25,17 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
 
     order_info_pub_ = nh_.advertise<at_work_robot_example_ros::OrderInfo> ("order_info", 10);
 
+
+    //Subscribers
+    drillling_machine_command_sub_ = nh_.subscribe<at_work_robot_example_ros::DrillingMachineCommand>(
+                        "drillling_machine_command", 1000, &RobotExampleROS::DrillingMachineCommandCB, this);
+
+    conveyor_belt_command_sub_ = nh_.subscribe<at_work_robot_example_ros::TriggeredConveyorBeltCommand>(
+                        "conveyor_belt_command", 1000, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
+
+    benchmark_feedback_sub_ = nh_.subscribe<at_work_robot_example_ros::BenchmarkFeedback>(
+                        "benchmark_feedback", 1000, &RobotExampleROS::BenchmarkFeedbackCB, this);
+
     initializeRobot();
 }
 
@@ -33,6 +44,98 @@ RobotExampleROS::~RobotExampleROS()
     // Delete all global objects allocated by libprotobuf
     google::protobuf::ShutdownProtobufLibrary();
 }
+
+void RobotExampleROS::DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg)
+{
+    //create a new message
+    std::shared_ptr<DrillingMachineCommand> drill_machine_command(new DrillingMachineCommand());
+
+    rockin_msgs::DrillingMachineCommand_Command cmd = drill_machine_command->command();
+
+    cmd = (rockin_msgs::DrillingMachineCommand_Command)msg.command.data;
+
+    drill_machine_command->set_command(cmd);
+
+    //send the Message over team peer
+    peer_team_->send(drill_machine_command);
+}
+
+void RobotExampleROS::TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::TriggeredConveyorBeltCommand msg)
+{
+    //create a new message
+    std::shared_ptr<TriggeredConveyorBeltCommand> conveyor_belt_command(new TriggeredConveyorBeltCommand);
+
+    //fill the message
+    rockin_msgs::ConveyorBeltRunMode cmd = conveyor_belt_command->command();
+
+    cmd = (rockin_msgs::ConveyorBeltRunMode)msg.command.data;
+
+    conveyor_belt_command->set_command(cmd);
+
+    conveyor_belt_command->set_next_cycle(msg.next_cycle.data);
+
+    //send the Message over team peer
+    peer_team_->send(conveyor_belt_command);
+}
+
+void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg)
+{
+    //create a new message
+    std::shared_ptr<BenchmarkFeedback> benchmark_feedback(new BenchmarkFeedback);
+
+    //fill the message for FBM1
+    benchmark_feedback->set_object_class_name((std::string)msg.object_class_name.data);
+
+    rockin_msgs::Pose3D *pose_object = benchmark_feedback->mutable_object_pose();
+
+    rockin_msgs::Position3D *position_object =  pose_object->mutable_position();
+    rockin_msgs::Quaternion *orientation_object =  pose_object->mutable_orientation();
+
+    position_object->set_x(msg.object_pose.position.x);
+    position_object->set_y(msg.object_pose.position.y);
+    position_object->set_z(msg.object_pose.position.z);
+
+    orientation_object->set_x(msg.object_pose.orientation.x);
+    orientation_object->set_y(msg.object_pose.orientation.y);
+    orientation_object->set_z(msg.object_pose.orientation.z);
+    orientation_object->set_w(msg.object_pose.orientation.w);
+
+    //fill the message for FBM1+FMB2
+    benchmark_feedback->set_object_instance_name((std::string)msg.object_instance_name.data);
+
+    //fill the message for FBM2
+    benchmark_feedback->set_grasp_notification(msg.grasp_notification.data);
+    rockin_msgs::Pose3D *pose_eef = benchmark_feedback->mutable_end_effector_pose();
+
+    rockin_msgs::Position3D *position_eef =  pose_eef->mutable_position();
+    rockin_msgs::Quaternion *orientation_eef =  pose_eef->mutable_orientation();
+
+    position_eef->set_x(msg.end_effector_pose.position.x);
+    position_eef->set_y(msg.end_effector_pose.position.y);
+    position_eef->set_z(msg.end_effector_pose.position.z);
+
+    orientation_eef->set_x(msg.end_effector_pose.orientation.x);
+    orientation_eef->set_y(msg.end_effector_pose.orientation.y);
+    orientation_eef->set_z(msg.end_effector_pose.orientation.z);
+    orientation_eef->set_w(msg.end_effector_pose.orientation.w);
+
+    //fill the message for TBM1
+    benchmark_feedback->set_assembly_aid_tray_id((std::string)msg.assembly_aid_tray_id.data);
+    benchmark_feedback->set_container_id((std::string)msg.container_id.data);
+
+    ////fill the message TBM2
+    rockin_msgs::BenchmarkFeedback_PlateState plate_state = benchmark_feedback->after_receiving();
+    plate_state = (rockin_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_receiving.data;
+    benchmark_feedback->set_after_receiving(plate_state);
+
+    plate_state = benchmark_feedback->after_drilling();
+    plate_state = (rockin_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_drilling.data;
+    benchmark_feedback->set_after_drilling(plate_state);
+
+    //send the Message over team peer
+    peer_team_->send(benchmark_feedback);
+}
+
 
 void RobotExampleROS::readParameters()
 {
