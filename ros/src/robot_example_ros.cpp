@@ -313,7 +313,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                                         benchmark_state_ptr->connected_teams(i);
         }
 
-        attention_message_pub_.publish(benchmark_state_msg);
+        benchmark_state_pub_.publish(benchmark_state_msg);
 
     } else if ((drill_machine_status_ptr = std::dynamic_pointer_cast<DrillingMachineStatus>(msg))) {
 
@@ -321,7 +321,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         drill_machine_msg.state.data = drill_machine_status_ptr->state();
 
-        attention_message_pub_.publish(drill_machine_msg);
+        drill_machine_status_pub_.publish(drill_machine_msg);
 
     } else if ((conveyor_belt_status_ptr = std::dynamic_pointer_cast<TriggeredConveyorBeltStatus>(msg))) {
 
@@ -331,7 +331,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         conveyor_belt_status_msg.cycle.data = conveyor_belt_status_ptr->cycle();
 
-        attention_message_pub_.publish(conveyor_belt_status_msg);
+        conveyor_belt_status_pub_.publish(conveyor_belt_status_msg);
 
     } else if ((inventory_pub_ptr = std::dynamic_pointer_cast<Inventory>(msg))) {
 
@@ -378,7 +378,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                                         inventory_pub_ptr->items(i).location().description();
         }
 
-        attention_message_pub_.publish(inventory_msg);
+        inventory_pub_.publish(inventory_msg);
 
     }  else if ((order_info_ptr = std::dynamic_pointer_cast<OrderInfo>(msg))) {
 
@@ -386,7 +386,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         order_info_msg.orders.resize(order_info_ptr->orders().size());
 
-        for(int i=0; i < inventory_pub_ptr->items().size(); i++) {
+        for(int i=0; i < order_info_ptr->orders().size(); i++) {
 
             order_info_msg.orders[i].id.data =
                                         order_info_ptr->orders(i).id();
@@ -445,7 +445,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                                         order_info_ptr->orders(i).processing_team();
         }
 
-        attention_message_pub_.publish(order_info_msg);
+        order_info_pub_.publish(order_info_msg);
 
     }
 }
