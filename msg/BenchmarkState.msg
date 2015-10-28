@@ -1,6 +1,10 @@
 # Time since benchmark start
 std_msgs/Time benchmark_time
 
+uint8 RUNNING = 1
+uint8 PAUSED = 2
+uint8 FINISHED = 3
+uint8 STOPPED = 4
 # Current benchmark state
 std_msgs/UInt64  state
 
