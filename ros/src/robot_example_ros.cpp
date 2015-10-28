@@ -119,6 +119,16 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
     orientation_eef->set_z(msg.end_effector_pose.orientation.z);
     orientation_eef->set_w(msg.end_effector_pose.orientation.w);
 
+    // make sure we have a valid plate state (if it wasn't set earlier)
+    if (msg.plate_state_after_receiving.data == 0)
+    {
+        msg.plate_state_after_receiving.data = BenchmarkFeedback::UNUSABLE;
+    }
+    if (msg.plate_state_after_drilling.data == 0)
+    {
+        msg.plate_state_after_drilling.data = BenchmarkFeedback::PERFECT;
+    }
+
     //fill the message for TBM1
     benchmark_feedback->set_assembly_aid_tray_id((std::string)msg.assembly_aid_tray_id.data);
     benchmark_feedback->set_container_id((std::string)msg.container_id.data);
