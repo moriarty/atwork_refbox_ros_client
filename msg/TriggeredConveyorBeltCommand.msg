@@ -1,3 +1,6 @@
+# Conveyor belt commands
+uint8 STOP  = 0 # The conveyor belt is standing still
+uint8 START = 1 # The conveyor belt is moving
 # The desired motion state of the conveyor belt.
 std_msgs/UInt32 command
 

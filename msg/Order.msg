@@ -1,6 +1,13 @@
 # A unique identifier of this order
 std_msgs/UInt64 id
 
+# types of status
+uint8 OFFERED     =  1  # The order is offered by the RefBox and can be processed by a team/robot
+uint8 TIMEOUT     =  2  # The order has not been accepted in time or processing took too long
+uint8 IN_PROGRESS =  3  # A team/robot is currently processing this order
+uint8 PAUSED      =  4  # Temporarily pause processing this order
+uint8 ABORTED     =  5  # Stop working on this order
+uint8 FINISHED    =  6  # The order has been processed successfully
 # The status of this order as specified in the Status enumeration
 std_msgs/UInt64 status
 

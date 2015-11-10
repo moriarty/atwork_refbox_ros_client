@@ -1,3 +1,8 @@
+# Object types
+uint8    AX = 1
+uint8    EM = 2
+uint8    ER = 3
+
 # The object class (e.g. "EM-01") consists of the type ("EM") and a type ID (1).
 # The type of the object
 std_msgs/UInt64 type
