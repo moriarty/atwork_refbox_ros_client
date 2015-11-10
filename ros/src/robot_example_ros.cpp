@@ -36,6 +36,15 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
     benchmark_feedback_sub_ = nh_.subscribe<at_work_robot_example_ros::BenchmarkFeedback>(
                         "benchmark_feedback", 1000, &RobotExampleROS::BenchmarkFeedbackCB, this);
 
+    logging_status_sub_ = nh_.subscribe<at_work_robot_example_ros::LoggingStatus>(
+                        "logging_status", 1000, &RobotExampleROS::LoggingStatusCB, this);
+
+    transaction_sub_ = nh_.subscribe<at_work_robot_example_ros::Transaction>(
+                        "inventory_transaction", 1000, &RobotExampleROS::InventoryTransactionCB, this);
+
+    robot_status_sub_ = nh_.subscribe<at_work_robot_example_ros::RobotStatusReport>(
+                        "robot_status_report", 1000, &RobotExampleROS::RobotStatusReportCB, this);
+
     initializeRobot();
 }
 
@@ -43,6 +52,66 @@ RobotExampleROS::~RobotExampleROS()
 {
     // Delete all global objects allocated by libprotobuf
     google::protobuf::ShutdownProtobufLibrary();
+}
+
+
+void RobotExampleROS::RobotStatusReportCB(at_work_robot_example_ros::RobotStatusReport msg)
+{
+    //create a new message
+    std::shared_ptr<RobotStatus> robot_status_report(new RobotStatus);
+
+    //fill the message
+    robot_status_report->set_capability((rockin_msgs::RobotStatus_Capability)msg.capability.data);
+    robot_status_report->set_functionality(msg.functionality.data);
+    robot_status_report->set_meta_data((std::string)msg.meta_data.data);
+
+    //send the Message over team peer
+    peer_team_->send(robot_status_report);
+}
+
+void RobotExampleROS::InventoryTransactionCB(at_work_robot_example_ros::Transaction msg)
+{
+    //create a new message
+    std::shared_ptr<Transaction> inventory_transaction(new Transaction);
+
+    //fill the message
+    inventory_transaction->set_transaction_id(msg.transaction_id.data);
+    inventory_transaction->set_order_id(msg.order_id.data);
+    
+    rockin_msgs::ObjectIdentifier *object_identifier =  inventory_transaction->mutable_object();
+    object_identifier->set_type((rockin_msgs::ObjectIdentifier_ObjectType)msg.object.type.data);
+    object_identifier->set_type_id(msg.object.type_id.data);
+    object_identifier->set_instance_id(msg.object.instance_id.data);
+    object_identifier->set_description((std::string)msg.object.description.data);
+
+    inventory_transaction->set_quantity(msg.quantity.data);
+    inventory_transaction->set_action((rockin_msgs::Transaction_Action)msg.action.data);
+    
+    rockin_msgs::LocationIdentifier *source_location =  inventory_transaction->mutable_source();
+    source_location->set_type((rockin_msgs::LocationIdentifier_LocationType)msg.source.type.data);
+    source_location->set_instance_id(msg.source.instance_id.data);
+    source_location->set_description((std::string)msg.source.description.data);
+
+    rockin_msgs::LocationIdentifier *destination_location =  inventory_transaction->mutable_destination();
+    destination_location->set_type((rockin_msgs::LocationIdentifier_LocationType)msg.destination.type.data);
+    destination_location->set_instance_id(msg.destination.instance_id.data);
+    destination_location->set_description((std::string)msg.destination.description.data);
+
+    //send the Message over team peer
+    peer_team_->send(inventory_transaction);
+}
+
+void RobotExampleROS::LoggingStatusCB(at_work_robot_example_ros::LoggingStatus msg)
+{
+    //create a new message
+    std::shared_ptr<LoggingStatus> logging_status(new LoggingStatus);
+
+    //fill the message
+    logging_status->set_is_logging(msg.is_logging.data);
+
+
+    //send the Message over team peer
+    peer_team_->send(logging_status);
 }
 
 void RobotExampleROS::DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg)
@@ -166,8 +235,16 @@ void RobotExampleROS::readParameters()
     ros::param::param<std::string>("~team_name", team_name_, "SPQR");
 
     ROS_INFO("Hostname: %s", host_name_.c_str());
-    ROS_INFO("Team Port: %i", team_port_);
-    ROS_INFO("Public Port: %i", public_port_);
+
+    if (remote_refbox_) {
+        ROS_INFO("Team Port: %i", team_port_);
+        ROS_INFO("Public Port: %i", public_port_);
+    } else {
+        ROS_INFO("Team Send Port: %i", team_send_port_);
+        ROS_INFO("Team Receieve Port: %i", team_recv_port_);
+        ROS_INFO("Refbox Send Port: %i", public_recv_port_);
+        ROS_INFO("Refbox Receieve Port: %i", public_send_port_);
+    }
     ROS_INFO("Name: %s", robot_name_.c_str());
     ROS_INFO("Team Name: %s", team_name_.c_str());
 }

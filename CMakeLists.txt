@@ -37,6 +37,9 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
     TriggeredConveyorBeltStatus.msg
     TriggeredConveyorBeltCommand.msg
     BenchmarkScenario.msg
+    LoggingStatus.msg
+    Transaction.msg
+    RobotStatusReport.msg
   )
 
   generate_messages(

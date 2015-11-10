@@ -16,7 +16,8 @@
 #include <rockin_msgs/RobotInfo.pb.h>
 #include <rockin_msgs/Time.pb.h>
 #include <rockin_msgs/VersionInfo.pb.h>
-
+#include <rockin_msgs/LoggingStatus.pb.h>
+#include <rockin_msgs/RobotStatusReport.pb.h>
 
 //publisher
 #include <at_work_robot_example_ros/AttentionMessage.h>
@@ -26,9 +27,13 @@
 #include <at_work_robot_example_ros/Inventory.h>
 #include <at_work_robot_example_ros/OrderInfo.h>
 
+// subscribers
 #include <at_work_robot_example_ros/BenchmarkFeedback.h>
 #include <at_work_robot_example_ros/TriggeredConveyorBeltCommand.h>
 #include <at_work_robot_example_ros/DrillingMachineCommand.h>
+#include <at_work_robot_example_ros/LoggingStatus.h>
+#include <at_work_robot_example_ros/Transaction.h>
+#include <at_work_robot_example_ros/RobotStatusReport.h>
 
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
@@ -114,6 +119,12 @@ class RobotExampleROS
 
         void BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg);
 
+        void LoggingStatusCB(at_work_robot_example_ros::LoggingStatus msg);
+
+        void InventoryTransactionCB(at_work_robot_example_ros::Transaction msg);
+
+        void RobotStatusReportCB(at_work_robot_example_ros::RobotStatusReport msg);
+
     private:
         /**
          * ROS node handle.
@@ -168,6 +179,12 @@ class RobotExampleROS
         ros::Subscriber conveyor_belt_command_sub_;
 
         ros::Subscriber benchmark_feedback_sub_;
+
+        ros::Subscriber logging_status_sub_;
+
+        ros::Subscriber transaction_sub_;
+
+        ros::Subscriber robot_status_sub_;
 
         /**
          * Parameter to check if refbox is running on local or another machine.
