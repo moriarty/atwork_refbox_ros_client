@@ -302,11 +302,11 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                                         benchmark_state_ptr->state();
         benchmark_state_msg.phase.data =
                                         benchmark_state_ptr->phase();
-        benchmark_state_msg.scenario.benchmark_type.data =
+        benchmark_state_msg.scenario.type.data =
                                         benchmark_state_ptr->scenario().type();
-        benchmark_state_msg.scenario.benchmark_type_id.data =
+        benchmark_state_msg.scenario.type_id.data =
                                         benchmark_state_ptr->scenario().type_id();
-        benchmark_state_msg.scenario.benchmark_description.data =
+        benchmark_state_msg.scenario.description.data =
                                         benchmark_state_ptr->scenario().description();
 
         benchmark_state_msg.known_teams.resize(benchmark_state_ptr->known_teams().size());
