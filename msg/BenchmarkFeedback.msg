@@ -20,13 +20,10 @@ geometry_msgs/Pose end_effector_pose
 std_msgs/String assembly_aid_tray_id
 std_msgs/String container_id
 
+# States of plates
 uint8 UNUSABLE = 1
 uint8 FAULTY   = 2
 uint8 PERFECT  = 3
 # TBM2 plate_state
 std_msgs/UInt64 plate_state_after_receiving
 std_msgs/UInt64 plate_state_after_drilling
-
-
-
-
