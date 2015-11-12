@@ -28,7 +28,7 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
 
     //Subscribers
     drillling_machine_command_sub_ = nh_.subscribe<at_work_robot_example_ros::DrillingMachineCommand>(
-                        "drillling_machine_command", 1000, &RobotExampleROS::DrillingMachineCommandCB, this);
+                        "drilling_machine_command", 1000, &RobotExampleROS::DrillingMachineCommandCB, this);
 
     conveyor_belt_command_sub_ = nh_.subscribe<at_work_robot_example_ros::TriggeredConveyorBeltCommand>(
                         "conveyor_belt_command", 1000, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
@@ -153,6 +153,8 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
     std::shared_ptr<BenchmarkFeedback> benchmark_feedback(new BenchmarkFeedback);
 
     //fill the message for FBM1
+    benchmark_feedback->set_phase_to_terminate((rockin_msgs::BenchmarkState_Phase)msg.phase_to_terminate.data);
+
     benchmark_feedback->set_object_class_name((std::string)msg.object_class_name.data);
 
     rockin_msgs::Pose3D *pose_object = benchmark_feedback->mutable_object_pose();
