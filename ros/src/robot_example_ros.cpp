@@ -15,23 +15,24 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
     benchmark_state_pub_ = nh_.advertise<at_work_robot_example_ros::BenchmarkState> (
                             "benchmark_state", 10);
 
-    drill_machine_status_pub_ = nh_.advertise<at_work_robot_example_ros::DrillingMachineStatus> (
-                            "drill_machine_status", 10);
+    //drill_machine_status_pub_ = nh_.advertise<at_work_robot_example_ros::DrillingMachineStatus> (
+    //                        "drill_machine_status", 10);
 
-    conveyor_belt_status_pub_ = nh_.advertise<at_work_robot_example_ros::TriggeredConveyorBeltStatus> (
-                        "conveyor_belt_status", 10);
+    //conveyor_belt_status_pub_ = nh_.advertise<at_work_robot_example_ros::TriggeredConveyorBeltStatus> (
+    //                    "conveyor_belt_status", 10);
 
     inventory_pub_ = nh_.advertise<at_work_robot_example_ros::Inventory> ("inventory", 10);
 
     order_info_pub_ = nh_.advertise<at_work_robot_example_ros::OrderInfo> ("order_info", 10);
 
+    task_spec_pub_ = nh_.advertise<std_msgs::String> ("task_spec", 10);
 
     //Subscribers
-    drillling_machine_command_sub_ = nh_.subscribe<at_work_robot_example_ros::DrillingMachineCommand>(
-                        "drilling_machine_command", 1000, &RobotExampleROS::DrillingMachineCommandCB, this);
+    //drillling_machine_command_sub_ = nh_.subscribe<at_work_robot_example_ros::DrillingMachineCommand>(
+    //                    "drilling_machine_command", 1000, &RobotExampleROS::DrillingMachineCommandCB, this);
 
-    conveyor_belt_command_sub_ = nh_.subscribe<at_work_robot_example_ros::TriggeredConveyorBeltCommand>(
-                        "conveyor_belt_command", 1000, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
+    //conveyor_belt_command_sub_ = nh_.subscribe<at_work_robot_example_ros::TriggeredConveyorBeltCommand>(
+    //                    "conveyor_belt_command", 1000, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
 
     benchmark_feedback_sub_ = nh_.subscribe<at_work_robot_example_ros::BenchmarkFeedback>(
                         "benchmark_feedback", 1000, &RobotExampleROS::BenchmarkFeedbackCB, this);
@@ -147,6 +148,7 @@ void RobotExampleROS::TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::
     peer_team_->send(conveyor_belt_command);
 }
 
+/**
 void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg)
 {
     //create a new message
@@ -216,7 +218,7 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
     //send the Message over team peer
     peer_team_->send(benchmark_feedback);
 }
-
+*/
 
 void RobotExampleROS::readParameters()
 {
@@ -277,10 +279,11 @@ void RobotExampleROS::initializeRobot()
     message_register.add_message_type<OrderInfo>();
     message_register.add_message_type<RobotInfo>();
     message_register.add_message_type<VersionInfo>();
-    message_register.add_message_type<DrillingMachineStatus>();
-    message_register.add_message_type<TriggeredConveyorBeltStatus>();
-    message_register.add_message_type<DrillingMachineCommand>();
-    message_register.add_message_type<TriggeredConveyorBeltCommand>();
+    //message_register.add_message_type<DrillingMachineStatus>();
+    //message_register.add_message_type<TriggeredConveyorBeltStatus>();
+    //message_register.add_message_type<DrillingMachineCommand>();
+    //message_register.add_message_type<TriggeredConveyorBeltCommand>();
+    message_register.add_message_type<TaskSpecification>();
 
     //create team peer and linked to internal message handler
     if (remote_refbox_) {
@@ -351,16 +354,18 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
     std::shared_ptr<BenchmarkState> benchmark_state_ptr;
 
-    std::shared_ptr<DrillingMachineStatus> drill_machine_status_ptr;
+    //std::shared_ptr<DrillingMachineStatus> drill_machine_status_ptr;
 
-    std::shared_ptr<TriggeredConveyorBeltStatus> conveyor_belt_status_ptr;
+    //std::shared_ptr<TriggeredConveyorBeltStatus> conveyor_belt_status_ptr;
 
     std::shared_ptr<Inventory> inventory_pub_ptr;
 
     std::shared_ptr<OrderInfo> order_info_ptr;
-             
-    if ((attention_msg_ptr = std::dynamic_pointer_cast<AttentionMessage>(msg))) {
 
+    std::shared_ptr<TaspSpecification> task_spec_ptr;
+
+    if ((attention_msg_ptr = std::dynamic_pointer_cast<AttentionMessage>(msg)))
+    {
         at_work_robot_example_ros::AttentionMessage attention_msg;
 
         attention_msg.message.data      = attention_msg_ptr->message();
@@ -368,8 +373,9 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
         attention_msg.team.data         = attention_msg_ptr->team();
 
         attention_message_pub_.publish(attention_msg);
-
-    } else if ((benchmark_state_ptr = std::dynamic_pointer_cast<BenchmarkState>(msg))) {
+    } 
+    else if ((benchmark_state_ptr = std::dynamic_pointer_cast<BenchmarkState>(msg))) 
+    {
 
         at_work_robot_example_ros::BenchmarkState benchmark_state_msg;
 
@@ -404,7 +410,16 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         benchmark_state_pub_.publish(benchmark_state_msg);
 
-    } else if ((drill_machine_status_ptr = std::dynamic_pointer_cast<DrillingMachineStatus>(msg))) {
+    }
+    else if ((task_spec_ptr = std::dynamic_pointer_cast<TaskSpecification>(msg)))
+    {
+        std_msgs::String task_spec_msg;
+        task_spec_msg.data = msg->task_spec();  
+        task_spec_pub_.publish(task_spec_msg);
+        
+    }
+    /*
+    else if ((drill_machine_status_ptr = std::dynamic_pointer_cast<DrillingMachineStatus>(msg))) {
 
         at_work_robot_example_ros::DrillingMachineStatus drill_machine_msg;
 
@@ -422,7 +437,9 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         conveyor_belt_status_pub_.publish(conveyor_belt_status_msg);
 
-    } else if ((inventory_pub_ptr = std::dynamic_pointer_cast<Inventory>(msg))) {
+    }
+    */ 
+    else if ((inventory_pub_ptr = std::dynamic_pointer_cast<Inventory>(msg))) {
 
         at_work_robot_example_ros::Inventory inventory_msg;
 

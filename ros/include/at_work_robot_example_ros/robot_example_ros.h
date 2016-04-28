@@ -7,30 +7,27 @@
 #include <raw_pb_msgs/BenchmarkState.pb.h>
 #include <raw_pb_msgs/BenchmarkFeedback.pb.h>
 #include <raw_pb_msgs/ConveyorBelt.pb.h>
-#include <raw_pb_msgs/DrillingMachine.pb.h>
 #include <raw_pb_msgs/Inventory.pb.h>
 #include <raw_pb_msgs/Order.pb.h>
-#include <raw_pb_msgs/Pose3D.pb.h>
-#include <raw_pb_msgs/Position3D.pb.h>
-#include <raw_pb_msgs/Quaternion.pb.h>
 #include <raw_pb_msgs/RobotInfo.pb.h>
 #include <raw_pb_msgs/Time.pb.h>
 #include <raw_pb_msgs/VersionInfo.pb.h>
 #include <raw_pb_msgs/LoggingStatus.pb.h>
 #include <raw_pb_msgs/RobotStatusReport.pb.h>
+#include <raw_pb_msgs/TaskSpecification.pb.h>
 
 //publisher
 #include <at_work_robot_example_ros/AttentionMessage.h>
 #include <at_work_robot_example_ros/BenchmarkState.h>
-#include <at_work_robot_example_ros/TriggeredConveyorBeltStatus.h>
-#include <at_work_robot_example_ros/DrillingMachineStatus.h>
+//#include <at_work_robot_example_ros/TriggeredConveyorBeltStatus.h>
 #include <at_work_robot_example_ros/Inventory.h>
 #include <at_work_robot_example_ros/OrderInfo.h>
+#include <std_msgs/String>
 
 // subscribers
 #include <at_work_robot_example_ros/BenchmarkFeedback.h>
-#include <at_work_robot_example_ros/TriggeredConveyorBeltCommand.h>
-#include <at_work_robot_example_ros/DrillingMachineCommand.h>
+//#include <at_work_robot_example_ros/TriggeredConveyorBeltCommand.h>
+//#include <at_work_robot_example_ros/DrillingMachineCommand.h>
 #include <at_work_robot_example_ros/LoggingStatus.h>
 #include <at_work_robot_example_ros/Transaction.h>
 #include <at_work_robot_example_ros/RobotStatusReport.h>
@@ -111,13 +108,13 @@ class RobotExampleROS
                             std::shared_ptr<google::protobuf::Message> msg);
 
 
-        void DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg);
+        //void DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg);
 
 
-        void TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::TriggeredConveyorBeltCommand msg);
+        //void TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::TriggeredConveyorBeltCommand msg);
 
 
-        void BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg);
+        //void BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg);
 
         void LoggingStatusCB(at_work_robot_example_ros::LoggingStatus msg);
 
@@ -163,20 +160,21 @@ class RobotExampleROS
 
         ros::Publisher benchmark_state_pub_;
 
-        ros::Publisher drill_machine_status_pub_;
-
+        //ros::Publisher drill_machine_status_pub_;
+        ros::Publisher task_spec_pub_;
+        
         ros::Publisher inventory_pub_;
 
         ros::Publisher order_info_pub_;
 
-        ros::Publisher conveyor_belt_status_pub_;
+        //ros::Publisher conveyor_belt_status_pub_;
 
         /**
          * Subscribers
          */
-        ros::Subscriber drillling_machine_command_sub_;
+        //ros::Subscriber drillling_machine_command_sub_;
 
-        ros::Subscriber conveyor_belt_command_sub_;
+        //ros::Subscriber conveyor_belt_command_sub_;
 
         ros::Subscriber benchmark_feedback_sub_;
 
