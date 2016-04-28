@@ -7,7 +7,7 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
     COMPONENTS
       roscpp
       protobuf_comm
-      rockin_msgs
+      raw_pb_msgs
       std_msgs
       geometry_msgs
       message_generation
@@ -52,7 +52,7 @@ if(DEFINED _CATKIN_ALL_INCLUDED_)
     CATKIN_DEPENDS
       roscpp
       protobuf_comm
-      rockin_msgs
+      raw_pb_msgs
       message_runtime
   )
 

@@ -61,7 +61,7 @@ void RobotExampleROS::RobotStatusReportCB(at_work_robot_example_ros::RobotStatus
     std::shared_ptr<RobotStatus> robot_status_report(new RobotStatus);
 
     //fill the message
-    robot_status_report->set_capability((rockin_msgs::RobotStatus_Capability)msg.capability.data);
+    robot_status_report->set_capability((raw_pb_msgs::RobotStatus_Capability)msg.capability.data);
     robot_status_report->set_functionality(msg.functionality.data);
     robot_status_report->set_meta_data((std::string)msg.meta_data.data);
 
@@ -78,22 +78,22 @@ void RobotExampleROS::InventoryTransactionCB(at_work_robot_example_ros::Transact
     inventory_transaction->set_transaction_id(msg.transaction_id.data);
     inventory_transaction->set_order_id(msg.order_id.data);
     
-    rockin_msgs::ObjectIdentifier *object_identifier =  inventory_transaction->mutable_object();
-    object_identifier->set_type((rockin_msgs::ObjectIdentifier_ObjectType)msg.object.type.data);
+    raw_pb_msgs::ObjectIdentifier *object_identifier =  inventory_transaction->mutable_object();
+    object_identifier->set_type((raw_pb_msgs::ObjectIdentifier_ObjectType)msg.object.type.data);
     object_identifier->set_type_id(msg.object.type_id.data);
     object_identifier->set_instance_id(msg.object.instance_id.data);
     object_identifier->set_description((std::string)msg.object.description.data);
 
     inventory_transaction->set_quantity(msg.quantity.data);
-    inventory_transaction->set_action((rockin_msgs::Transaction_Action)msg.action.data);
+    inventory_transaction->set_action((raw_pb_msgs::Transaction_Action)msg.action.data);
     
-    rockin_msgs::LocationIdentifier *source_location =  inventory_transaction->mutable_source();
-    source_location->set_type((rockin_msgs::LocationIdentifier_LocationType)msg.source.type.data);
+    raw_pb_msgs::LocationIdentifier *source_location =  inventory_transaction->mutable_source();
+    source_location->set_type((raw_pb_msgs::LocationIdentifier_LocationType)msg.source.type.data);
     source_location->set_instance_id(msg.source.instance_id.data);
     source_location->set_description((std::string)msg.source.description.data);
 
-    rockin_msgs::LocationIdentifier *destination_location =  inventory_transaction->mutable_destination();
-    destination_location->set_type((rockin_msgs::LocationIdentifier_LocationType)msg.destination.type.data);
+    raw_pb_msgs::LocationIdentifier *destination_location =  inventory_transaction->mutable_destination();
+    destination_location->set_type((raw_pb_msgs::LocationIdentifier_LocationType)msg.destination.type.data);
     destination_location->set_instance_id(msg.destination.instance_id.data);
     destination_location->set_description((std::string)msg.destination.description.data);
 
@@ -119,9 +119,9 @@ void RobotExampleROS::DrillingMachineCommandCB(at_work_robot_example_ros::Drilli
     //create a new message
     std::shared_ptr<DrillingMachineCommand> drill_machine_command(new DrillingMachineCommand());
 
-    rockin_msgs::DrillingMachineCommand_Command cmd = drill_machine_command->command();
+    raw_pb_msgs::DrillingMachineCommand_Command cmd = drill_machine_command->command();
 
-    cmd = (rockin_msgs::DrillingMachineCommand_Command)msg.command.data;
+    cmd = (raw_pb_msgs::DrillingMachineCommand_Command)msg.command.data;
 
     drill_machine_command->set_command(cmd);
 
@@ -135,9 +135,9 @@ void RobotExampleROS::TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::
     std::shared_ptr<TriggeredConveyorBeltCommand> conveyor_belt_command(new TriggeredConveyorBeltCommand);
 
     //fill the message
-    rockin_msgs::ConveyorBeltRunMode cmd = conveyor_belt_command->command();
+    raw_pb_msgs::ConveyorBeltRunMode cmd = conveyor_belt_command->command();
 
-    cmd = (rockin_msgs::ConveyorBeltRunMode)msg.command.data;
+    cmd = (raw_pb_msgs::ConveyorBeltRunMode)msg.command.data;
 
     conveyor_belt_command->set_command(cmd);
 
@@ -153,14 +153,14 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
     std::shared_ptr<BenchmarkFeedback> benchmark_feedback(new BenchmarkFeedback);
 
     //fill the message for FBM1
-    benchmark_feedback->set_phase_to_terminate((rockin_msgs::BenchmarkState_Phase)msg.phase_to_terminate.data);
+    benchmark_feedback->set_phase_to_terminate((raw_pb_msgs::BenchmarkState_Phase)msg.phase_to_terminate.data);
 
     benchmark_feedback->set_object_class_name((std::string)msg.object_class_name.data);
 
-    rockin_msgs::Pose3D *pose_object = benchmark_feedback->mutable_object_pose();
+    raw_pb_msgs::Pose3D *pose_object = benchmark_feedback->mutable_object_pose();
 
-    rockin_msgs::Position3D *position_object =  pose_object->mutable_position();
-    rockin_msgs::Quaternion *orientation_object =  pose_object->mutable_orientation();
+    raw_pb_msgs::Position3D *position_object =  pose_object->mutable_position();
+    raw_pb_msgs::Quaternion *orientation_object =  pose_object->mutable_orientation();
 
     position_object->set_x(msg.object_pose.position.x);
     position_object->set_y(msg.object_pose.position.y);
@@ -176,10 +176,10 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
 
     //fill the message for FBM2
     benchmark_feedback->set_grasp_notification(msg.grasp_notification.data);
-    rockin_msgs::Pose3D *pose_eef = benchmark_feedback->mutable_end_effector_pose();
+    raw_pb_msgs::Pose3D *pose_eef = benchmark_feedback->mutable_end_effector_pose();
 
-    rockin_msgs::Position3D *position_eef =  pose_eef->mutable_position();
-    rockin_msgs::Quaternion *orientation_eef =  pose_eef->mutable_orientation();
+    raw_pb_msgs::Position3D *position_eef =  pose_eef->mutable_position();
+    raw_pb_msgs::Quaternion *orientation_eef =  pose_eef->mutable_orientation();
 
     position_eef->set_x(msg.end_effector_pose.position.x);
     position_eef->set_y(msg.end_effector_pose.position.y);
@@ -205,12 +205,12 @@ void RobotExampleROS::BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFe
     benchmark_feedback->set_container_id((std::string)msg.container_id.data);
 
     ////fill the message TBM2
-    rockin_msgs::BenchmarkFeedback_PlateState plate_state = benchmark_feedback->after_receiving();
-    plate_state = (rockin_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_receiving.data;
+    raw_pb_msgs::BenchmarkFeedback_PlateState plate_state = benchmark_feedback->after_receiving();
+    plate_state = (raw_pb_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_receiving.data;
     benchmark_feedback->set_after_receiving(plate_state);
 
     plate_state = benchmark_feedback->after_drilling();
-    plate_state = (rockin_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_drilling.data;
+    plate_state = (raw_pb_msgs::BenchmarkFeedback_PlateState)msg.plate_state_after_drilling.data;
     benchmark_feedback->set_after_drilling(plate_state);
 
     //send the Message over team peer

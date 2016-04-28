@@ -2,22 +2,22 @@
 #include <ros/ros.h>
 #include <protobuf_comm/peer.h>
 
-#include <rockin_msgs/AttentionMessage.pb.h>
-#include <rockin_msgs/BeaconSignal.pb.h>
-#include <rockin_msgs/BenchmarkState.pb.h>
-#include <rockin_msgs/BenchmarkFeedback.pb.h>
-#include <rockin_msgs/ConveyorBelt.pb.h>
-#include <rockin_msgs/DrillingMachine.pb.h>
-#include <rockin_msgs/Inventory.pb.h>
-#include <rockin_msgs/Order.pb.h>
-#include <rockin_msgs/Pose3D.pb.h>
-#include <rockin_msgs/Position3D.pb.h>
-#include <rockin_msgs/Quaternion.pb.h>
-#include <rockin_msgs/RobotInfo.pb.h>
-#include <rockin_msgs/Time.pb.h>
-#include <rockin_msgs/VersionInfo.pb.h>
-#include <rockin_msgs/LoggingStatus.pb.h>
-#include <rockin_msgs/RobotStatusReport.pb.h>
+#include <raw_pb_msgs/AttentionMessage.pb.h>
+#include <raw_pb_msgs/BeaconSignal.pb.h>
+#include <raw_pb_msgs/BenchmarkState.pb.h>
+#include <raw_pb_msgs/BenchmarkFeedback.pb.h>
+#include <raw_pb_msgs/ConveyorBelt.pb.h>
+#include <raw_pb_msgs/DrillingMachine.pb.h>
+#include <raw_pb_msgs/Inventory.pb.h>
+#include <raw_pb_msgs/Order.pb.h>
+#include <raw_pb_msgs/Pose3D.pb.h>
+#include <raw_pb_msgs/Position3D.pb.h>
+#include <raw_pb_msgs/Quaternion.pb.h>
+#include <raw_pb_msgs/RobotInfo.pb.h>
+#include <raw_pb_msgs/Time.pb.h>
+#include <raw_pb_msgs/VersionInfo.pb.h>
+#include <raw_pb_msgs/LoggingStatus.pb.h>
+#include <raw_pb_msgs/RobotStatusReport.pb.h>
 
 //publisher
 #include <at_work_robot_example_ros/AttentionMessage.h>
@@ -42,7 +42,7 @@
 #include <sstream>
 
 using namespace protobuf_comm;
-using namespace rockin_msgs;
+using namespace raw_pb_msgs;
 
 class RobotExampleROS
 {
