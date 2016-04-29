@@ -1,77 +1,55 @@
 cmake_minimum_required(VERSION 2.8.7)
 project(at_work_robot_example_ros)
 
-## if: using catkin_make
-if(DEFINED _CATKIN_ALL_INCLUDED_)
-  find_package(catkin REQUIRED
-    COMPONENTS
-      roscpp
-      protobuf_comm
-      raw_pb_msgs
-      std_msgs
-      geometry_msgs
-      message_generation
-  )
 
-  find_package(Boost REQUIRED COMPONENTS system filesystem thread)
+find_package(
+  Boost REQUIRED COMPONENTS system filesystem thread)
+find_package(catkin REQUIRED
+  COMPONENTS
+    roscpp
+    protobuf_comm
+    raw_msgs
+    at_work_central_factory_hub_ros_msgs
+    std_msgs
+    geometry_msgs
+    message_generation
+)
 
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -DHAVE_LIBCRYPTO")
 
-  include_directories(
-    ros/include
-    ${catkin_INCLUDE_DIRS}
-  )
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -DHAVE_LIBCRYPTO")
 
-  add_message_files(FILES
-    AttentionMessage.msg
-    BenchmarkState.msg
-    BenchmarkFeedback.msg
-    DrillingMachineCommand.msg
-    DrillingMachineStatus.msg
-    Inventory.msg
-    Item.msg
-    LocationIdentifier.msg
-    ObjectIdentifier.msg
-    Order.msg
-    OrderInfo.msg
-    TriggeredConveyorBeltStatus.msg
-    TriggeredConveyorBeltCommand.msg
-    BenchmarkScenario.msg
-    LoggingStatus.msg
-    Transaction.msg
-    RobotStatusReport.msg
-  )
+include_directories(
+  ros/include
+  ${catkin_INCLUDE_DIRS}
+)
 
-  generate_messages(
-    DEPENDENCIES
-      std_msgs
-      geometry_msgs
-  )
+catkin_package(
+  CATKIN_DEPENDS
+    roscpp
+    protobuf_comm
+    raw_msgs
+    at_work_central_factory_hub_ros_msgs
+)
 
-  catkin_package(
-    CATKIN_DEPENDS
-      roscpp
-      protobuf_comm
-      raw_pb_msgs
-      message_runtime
-  )
+add_executable(robot_example_ros
+   ros/src/robot_example_ros_node.cpp
+   ros/src/robot_example_ros.cpp
+)
 
-  add_executable(robot_example_ros
-     ros/src/robot_example_ros_node.cpp
-     ros/src/robot_example_ros.cpp
-  )
+target_link_libraries(robot_example_ros
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
 
-  target_link_libraries(robot_example_ros
-     ${catkin_LIBRARIES}
-     ${Boost_LIBRARIES}
-  )
+install(
+  DIRECTORY ros/include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+)
 
-  install(
-    TARGETS robot_example_ros
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  )
+install(
+  TARGETS robot_example_ros
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
-## else: using cmake
-else()
 
-endif()

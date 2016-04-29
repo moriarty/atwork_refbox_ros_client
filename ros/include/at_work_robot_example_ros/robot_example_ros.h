@@ -2,35 +2,35 @@
 #include <ros/ros.h>
 #include <protobuf_comm/peer.h>
 
-#include <raw_pb_msgs/AttentionMessage.pb.h>
-#include <raw_pb_msgs/BeaconSignal.pb.h>
-#include <raw_pb_msgs/BenchmarkState.pb.h>
-#include <raw_pb_msgs/BenchmarkFeedback.pb.h>
-#include <raw_pb_msgs/ConveyorBelt.pb.h>
-#include <raw_pb_msgs/Inventory.pb.h>
-#include <raw_pb_msgs/Order.pb.h>
-#include <raw_pb_msgs/RobotInfo.pb.h>
-#include <raw_pb_msgs/Time.pb.h>
-#include <raw_pb_msgs/VersionInfo.pb.h>
-#include <raw_pb_msgs/LoggingStatus.pb.h>
-#include <raw_pb_msgs/RobotStatusReport.pb.h>
-#include <raw_pb_msgs/TaskSpecification.pb.h>
+#include <raw_msgs/AttentionMessage.pb.h>
+#include <raw_msgs/BeaconSignal.pb.h>
+#include <raw_msgs/TestState.pb.h>
+//#include <raw_msgs/BenchmarkFeedback.pb.h>
+#include <raw_msgs/ConveyorBelt.pb.h>
+#include <raw_msgs/Inventory.pb.h>
+#include <raw_msgs/Order.pb.h>
+#include <raw_msgs/RobotInfo.pb.h>
+#include <raw_msgs/Time.pb.h>
+#include <raw_msgs/VersionInfo.pb.h>
+#include <raw_msgs/LoggingStatus.pb.h>
+#include <raw_msgs/RobotStatusReport.pb.h>
+#include <raw_msgs/TaskSpecification.pb.h>
 
 //publisher
-#include <at_work_robot_example_ros/AttentionMessage.h>
-#include <at_work_robot_example_ros/BenchmarkState.h>
-//#include <at_work_robot_example_ros/TriggeredConveyorBeltStatus.h>
-#include <at_work_robot_example_ros/Inventory.h>
-#include <at_work_robot_example_ros/OrderInfo.h>
-#include <std_msgs/String>
+#include <at_work_central_factory_hub_ros_msgs/AttentionMessage.h>
+#include <at_work_central_factory_hub_ros_msgs/BenchmarkState.h>
+//#include <at_work_central_factory_hub_ros_msgs/TriggeredConveyorBeltStatus.h>
+#include <at_work_central_factory_hub_ros_msgs/Inventory.h>
+#include <at_work_central_factory_hub_ros_msgs/OrderInfo.h>
+#include "std_msgs/String.h"
 
 // subscribers
-#include <at_work_robot_example_ros/BenchmarkFeedback.h>
-//#include <at_work_robot_example_ros/TriggeredConveyorBeltCommand.h>
-//#include <at_work_robot_example_ros/DrillingMachineCommand.h>
-#include <at_work_robot_example_ros/LoggingStatus.h>
-#include <at_work_robot_example_ros/Transaction.h>
-#include <at_work_robot_example_ros/RobotStatusReport.h>
+#include <at_work_central_factory_hub_ros_msgs/BenchmarkFeedback.h>
+//#include <at_work_central_factory_hub_ros_msgs/TriggeredConveyorBeltCommand.h>
+//#include <at_work_central_factory_hub_ros_msgs/DrillingMachineCommand.h>
+#include <at_work_central_factory_hub_ros_msgs/LoggingStatus.h>
+#include <at_work_central_factory_hub_ros_msgs/Transaction.h>
+#include <at_work_central_factory_hub_ros_msgs/RobotStatusReport.h>
 
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
@@ -39,7 +39,7 @@
 #include <sstream>
 
 using namespace protobuf_comm;
-using namespace raw_pb_msgs;
+using namespace raw_msgs;
 
 class RobotExampleROS
 {
@@ -108,19 +108,19 @@ class RobotExampleROS
                             std::shared_ptr<google::protobuf::Message> msg);
 
 
-        //void DrillingMachineCommandCB(at_work_robot_example_ros::DrillingMachineCommand msg);
+        //void DrillingMachineCommandCB(at_work_central_factory_hub_ros_msgs::DrillingMachineCommand msg);
 
 
-        //void TriggeredConveyorBeltCommandCB(at_work_robot_example_ros::TriggeredConveyorBeltCommand msg);
+        //void TriggeredConveyorBeltCommandCB(at_work_central_factory_hub_ros_msgs::TriggeredConveyorBeltCommand msg);
 
 
-        //void BenchmarkFeedbackCB(at_work_robot_example_ros::BenchmarkFeedback msg);
+        //void BenchmarkFeedbackCB(at_work_central_factory_hub_ros_msgs::BenchmarkFeedback msg);
 
-        void LoggingStatusCB(at_work_robot_example_ros::LoggingStatus msg);
+        void LoggingStatusCB(at_work_central_factory_hub_ros_msgs::LoggingStatus msg);
 
-        void InventoryTransactionCB(at_work_robot_example_ros::Transaction msg);
+        void InventoryTransactionCB(at_work_central_factory_hub_ros_msgs::Transaction msg);
 
-        void RobotStatusReportCB(at_work_robot_example_ros::RobotStatusReport msg);
+        void RobotStatusReportCB(at_work_central_factory_hub_ros_msgs::RobotStatusReport msg);
 
     private:
         /**

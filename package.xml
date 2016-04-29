@@ -16,15 +16,17 @@
   
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>at_work_central_factory_hub_ros_msgs</build_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>raw_pb_msgs</build_depend>
+  <build_depend>raw_msgs</build_depend>
   <build_depend>protobuf_comm</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>message_generation</build_depend>
 
+  <run_depend>at_work_central_factory_hub_ros_msgs</run_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>raw_pb_msgs</run_depend>
+  <run_depend>raw_msgs</run_depend>
   <run_depend>protobuf_comm</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
