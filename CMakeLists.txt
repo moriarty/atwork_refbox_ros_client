@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.7)
-project(at_work_robot_example_ros)
+project(atwork_refbox_ros_client)
 
 
 find_package(
@@ -8,8 +8,8 @@ find_package(catkin REQUIRED
   COMPONENTS
     roscpp
     protobuf_comm
-    raw_msgs
-    at_work_central_factory_hub_ros_msgs
+    atwork_pb_msgs
+    atwork_ros_msgs
     std_msgs
     geometry_msgs
     message_generation
@@ -27,8 +27,8 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp
     protobuf_comm
-    raw_msgs
-    at_work_central_factory_hub_ros_msgs
+    atwork_pb_msgs
+    atwork_ros_msgs
 )
 
 add_executable(robot_example_ros

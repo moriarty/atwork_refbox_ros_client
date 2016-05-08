@@ -2,35 +2,37 @@
 #include <ros/ros.h>
 #include <protobuf_comm/peer.h>
 
-#include <raw_msgs/AttentionMessage.pb.h>
-#include <raw_msgs/BeaconSignal.pb.h>
-#include <raw_msgs/TestState.pb.h>
-//#include <raw_msgs/BenchmarkFeedback.pb.h>
-#include <raw_msgs/ConveyorBelt.pb.h>
-#include <raw_msgs/Inventory.pb.h>
-#include <raw_msgs/Order.pb.h>
-#include <raw_msgs/RobotInfo.pb.h>
-#include <raw_msgs/Time.pb.h>
-#include <raw_msgs/VersionInfo.pb.h>
-#include <raw_msgs/LoggingStatus.pb.h>
-#include <raw_msgs/RobotStatusReport.pb.h>
-#include <raw_msgs/TaskSpecification.pb.h>
+#include <atwork_pb_msgs/AttentionMessage.pb.h>
+#include <atwork_pb_msgs/BeaconSignal.pb.h>
+#include <atwork_pb_msgs/BenchmarkState.pb.h>
+//#include <atwork_pb_msgs/BenchmarkFeedback.pb.h>
+#include <atwork_pb_msgs/ConveyorBelt.pb.h>
+#include <atwork_pb_msgs/DrillingMachine.pb.h>
+#include <atwork_pb_msgs/Inventory.pb.h>
+#include <atwork_pb_msgs/Order.pb.h>
+#include <atwork_pb_msgs/RobotInfo.pb.h>
+#include <atwork_pb_msgs/Time.pb.h>
+#include <atwork_pb_msgs/VersionInfo.pb.h>
+#include <atwork_pb_msgs/LoggingStatus.pb.h>
+#include <atwork_pb_msgs/RobotStatusReport.pb.h>
+//#include <atwork_pb_msgs/TaskSpecification.pb.h>
 
 //publisher
-#include <at_work_central_factory_hub_ros_msgs/AttentionMessage.h>
-#include <at_work_central_factory_hub_ros_msgs/BenchmarkState.h>
-//#include <at_work_central_factory_hub_ros_msgs/TriggeredConveyorBeltStatus.h>
-#include <at_work_central_factory_hub_ros_msgs/Inventory.h>
-#include <at_work_central_factory_hub_ros_msgs/OrderInfo.h>
+#include <atwork_ros_msgs/AttentionMessage.h>
+#include <atwork_ros_msgs/BenchmarkState.h>
+#include <atwork_ros_msgs/DrillingMachineStatus.h>
+#include <atwork_ros_msgs/TriggeredConveyorBeltStatus.h>
+#include <atwork_ros_msgs/Inventory.h>
+#include <atwork_ros_msgs/OrderInfo.h>
 #include "std_msgs/String.h"
 
 // subscribers
-#include <at_work_central_factory_hub_ros_msgs/BenchmarkFeedback.h>
-//#include <at_work_central_factory_hub_ros_msgs/TriggeredConveyorBeltCommand.h>
-//#include <at_work_central_factory_hub_ros_msgs/DrillingMachineCommand.h>
-#include <at_work_central_factory_hub_ros_msgs/LoggingStatus.h>
-#include <at_work_central_factory_hub_ros_msgs/Transaction.h>
-#include <at_work_central_factory_hub_ros_msgs/RobotStatusReport.h>
+#include <atwork_ros_msgs/BenchmarkFeedback.h>
+#include <atwork_ros_msgs/TriggeredConveyorBeltCommand.h>
+#include <atwork_ros_msgs/DrillingMachineCommand.h>
+#include <atwork_ros_msgs/LoggingStatus.h>
+#include <atwork_ros_msgs/Transaction.h>
+#include <atwork_ros_msgs/RobotStatusReport.h>
 
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
@@ -39,7 +41,7 @@
 #include <sstream>
 
 using namespace protobuf_comm;
-using namespace raw_msgs;
+using namespace atwork_pb_msgs;
 
 class RobotExampleROS
 {
@@ -107,20 +109,17 @@ class RobotExampleROS
                             uint16_t component_id, uint16_t msg_type,
                             std::shared_ptr<google::protobuf::Message> msg);
 
+        void DrillingMachineCommandCB(atwork_ros_msgs::DrillingMachineCommand msg);
 
-        //void DrillingMachineCommandCB(at_work_central_factory_hub_ros_msgs::DrillingMachineCommand msg);
+        void TriggeredConveyorBeltCommandCB(atwork_ros_msgs::TriggeredConveyorBeltCommand msg);
 
+        //void BenchmarkFeedbackCB(atwork_ros_msgs::BenchmarkFeedback msg);
 
-        //void TriggeredConveyorBeltCommandCB(at_work_central_factory_hub_ros_msgs::TriggeredConveyorBeltCommand msg);
+        void LoggingStatusCB(atwork_ros_msgs::LoggingStatus msg);
 
+        void InventoryTransactionCB(atwork_ros_msgs::Transaction msg);
 
-        //void BenchmarkFeedbackCB(at_work_central_factory_hub_ros_msgs::BenchmarkFeedback msg);
-
-        void LoggingStatusCB(at_work_central_factory_hub_ros_msgs::LoggingStatus msg);
-
-        void InventoryTransactionCB(at_work_central_factory_hub_ros_msgs::Transaction msg);
-
-        void RobotStatusReportCB(at_work_central_factory_hub_ros_msgs::RobotStatusReport msg);
+        void RobotStatusReportCB(atwork_ros_msgs::RobotStatusReport msg);
 
     private:
         /**
@@ -160,21 +159,20 @@ class RobotExampleROS
 
         ros::Publisher benchmark_state_pub_;
 
-        //ros::Publisher drill_machine_status_pub_;
-        ros::Publisher task_spec_pub_;
+        ros::Publisher drill_machine_status_pub_;
         
         ros::Publisher inventory_pub_;
 
         ros::Publisher order_info_pub_;
 
-        //ros::Publisher conveyor_belt_status_pub_;
+        ros::Publisher conveyor_belt_status_pub_;
 
         /**
          * Subscribers
          */
-        //ros::Subscriber drillling_machine_command_sub_;
+        ros::Subscriber drillling_machine_command_sub_;
 
-        //ros::Subscriber conveyor_belt_command_sub_;
+        ros::Subscriber conveyor_belt_command_sub_;
 
         ros::Subscriber benchmark_feedback_sub_;
 
