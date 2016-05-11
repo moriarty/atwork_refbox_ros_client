@@ -7,7 +7,7 @@
 #include <atwork_pb_msgs/BenchmarkState.pb.h>
 #include <atwork_pb_msgs/ConveyorBelt.pb.h>
 #include <atwork_pb_msgs/Inventory.pb.h>
-#include <atwork_pb_msgs/Order.pb.h>
+#include <atwork_pb_msgs/TaskInfo.pb.h>
 #include <atwork_pb_msgs/RobotInfo.pb.h>
 #include <atwork_pb_msgs/Time.pb.h>
 #include <atwork_pb_msgs/VersionInfo.pb.h>
@@ -18,7 +18,7 @@
 #include <atwork_ros_msgs/BenchmarkState.h>
 #include <atwork_ros_msgs/TriggeredConveyorBeltStatus.h>
 #include <atwork_ros_msgs/Inventory.h>
-#include <atwork_ros_msgs/OrderInfo.h>
+#include <atwork_ros_msgs/TaskInfo.h>
 #include "std_msgs/String.h"
 
 // subscribers
@@ -147,7 +147,7 @@ class RobotExampleROS
 
         ros::Publisher inventory_pub_;
 
-        ros::Publisher order_info_pub_;
+        ros::Publisher task_info_pub_;
 
         ros::Publisher conveyor_belt_status_pub_;
 

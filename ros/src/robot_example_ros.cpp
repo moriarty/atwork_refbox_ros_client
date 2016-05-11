@@ -19,7 +19,7 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
 
     inventory_pub_ = nh_.advertise<atwork_ros_msgs::Inventory> ("inventory", 10);
 
-    order_info_pub_ = nh_.advertise<atwork_ros_msgs::OrderInfo> ("order_info", 10);
+    task_info_pub_ = nh_.advertise<atwork_ros_msgs::TaskInfo> ("task_info", 10);
 
     //Subscribers
     conveyor_belt_command_sub_ = nh_.subscribe<atwork_ros_msgs::TriggeredConveyorBeltCommand>(
@@ -159,7 +159,7 @@ void RobotExampleROS::initializeRobot()
     message_register.add_message_type<BeaconSignal>();
     message_register.add_message_type<BenchmarkState>();
     message_register.add_message_type<Inventory>();
-    message_register.add_message_type<OrderInfo>();
+    message_register.add_message_type<TaskInfo>();
     message_register.add_message_type<RobotInfo>();
     message_register.add_message_type<VersionInfo>();
     message_register.add_message_type<TriggeredConveyorBeltStatus>();
@@ -238,7 +238,7 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
     std::shared_ptr<Inventory> inventory_pub_ptr;
 
-    std::shared_ptr<OrderInfo> order_info_ptr;
+    std::shared_ptr<TaskInfo> task_info_ptr;
 
     if ((attention_msg_ptr = std::dynamic_pointer_cast<AttentionMessage>(msg)))
     {
@@ -348,81 +348,78 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
 
         inventory_pub_.publish(inventory_msg);
 
-    }  else if ((order_info_ptr = std::dynamic_pointer_cast<OrderInfo>(msg))) {
+    }  else if ((task_info_ptr = std::dynamic_pointer_cast<TaskInfo>(msg))) {
+        atwork_ros_msgs::TaskInfo task_info_msg;
 
-        atwork_ros_msgs::OrderInfo order_info_msg;
+        task_info_msg.tasks.resize(task_info_ptr->tasks().size());
 
-        order_info_msg.orders.resize(order_info_ptr->orders().size());
+        for(int i=0; i < task_info_ptr->tasks().size(); i++) {
+            const atwork_pb_msgs::Task &task = task_info_ptr->tasks(i);
+            task_info_msg.tasks[i].id.data = task.id();
+            task_info_msg.tasks[i].type.data = task.type();
+            task_info_msg.tasks[i].status.data = task.status();
 
-        for(int i=0; i < order_info_ptr->orders().size(); i++) {
+            switch (task.type()) {
+                case atwork_pb_msgs::Task::TRANSPORTATION:
+                    if (task.has_transportation_task()) {
+                        task_info_msg.tasks[i].transportation_task.object.type.data =
+                                        task.transportation_task().object().type();
+                        task_info_msg.tasks[i].transportation_task.object.type_id.data =
+                                        task.transportation_task().object().type_id();
+                        task_info_msg.tasks[i].transportation_task.object.instance_id.data =
+                                        task.transportation_task().object().instance_id();
+                        task_info_msg.tasks[i].transportation_task.object.description.data =
+                                        task.transportation_task().object().description();
+                        task_info_msg.tasks[i].transportation_task.container.type.data =
+                                        task.transportation_task().container().type();
+                        task_info_msg.tasks[i].transportation_task.container.type_id.data =
+                                        task.transportation_task().container().type_id();
+                        task_info_msg.tasks[i].transportation_task.container.instance_id.data =
+                                        task.transportation_task().container().instance_id();
+                        task_info_msg.tasks[i].transportation_task.container.description.data =
+                                        task.transportation_task().container().description();
+                        task_info_msg.tasks[i].transportation_task.quantity_delivered.data =
+                                        task.transportation_task().quantity_delivered();
+                        task_info_msg.tasks[i].transportation_task.quantity_requested.data =
+                                        task.transportation_task().quantity_requested();
+                        task_info_msg.tasks[i].transportation_task.destination.type.data =
+                                        task.transportation_task().destination().type();
+                        task_info_msg.tasks[i].transportation_task.destination.instance_id.data =
+                                        task.transportation_task().destination().instance_id();
+                        task_info_msg.tasks[i].transportation_task.destination.description.data =
+                                        task.transportation_task().destination().description();
+                        task_info_msg.tasks[i].transportation_task.source.type.data =
+                                        task.transportation_task().source().type();
+                        task_info_msg.tasks[i].transportation_task.source.instance_id.data =
+                                        task.transportation_task().source().instance_id();
+                        task_info_msg.tasks[i].transportation_task.source.description.data =
+                                        task.transportation_task().source().description();
+                        task_info_msg.tasks[i].transportation_task.processing_team.data =
+                                        task.transportation_task().processing_team();
+                    }
+                break;
+                case atwork_pb_msgs::Task::NAVIGATION:
+                    if (task.has_navigation_task()) {
+                        task_info_msg.tasks[i].navigation_task.location.type.data =
+                                        task.navigation_task().location().type();
+                        task_info_msg.tasks[i].navigation_task.location.instance_id.data =
+                                        task.navigation_task().location().instance_id();
+                        task_info_msg.tasks[i].navigation_task.location.description.data =
+                                        task.navigation_task().location().description();
+                        task_info_msg.tasks[i].navigation_task.wait_time.data.sec = task.navigation_task().wait_time().sec();
+                        task_info_msg.tasks[i].navigation_task.wait_time.data.nsec = task.navigation_task().wait_time().nsec();
+                        task_info_msg.tasks[i].navigation_task.orientation.data = task.navigation_task().orientation();
+                    }
+                break;
+                case atwork_pb_msgs::Task::UNKNOWN:
+                break;
+                default:
+                    ROS_INFO("TaskInfo Default?");
 
-            order_info_msg.orders[i].id.data =
-                                        order_info_ptr->orders(i).id();
-            order_info_msg.orders[i].status.data =
-                                        order_info_ptr->orders(i).status();
-
-            order_info_msg.orders[i].object.type.data =
-                                        order_info_ptr->orders(i).object().type();
-
-            order_info_msg.orders[i].object.type_id.data =
-                                        order_info_ptr->orders(i).object().type_id();
-
-            order_info_msg.orders[i].object.instance_id.data =
-                                        order_info_ptr->orders(i).object().instance_id();
-
-            order_info_msg.orders[i].object.description.data =
-                                        order_info_ptr->orders(i).object().description();
-
-            order_info_msg.orders[i].container.type.data =
-                                        order_info_ptr->orders(i).container().type();
-
-            order_info_msg.orders[i].container.type_id.data =
-                                        order_info_ptr->orders(i).container().type_id();
-
-            order_info_msg.orders[i].container.instance_id.data =
-                                        order_info_ptr->orders(i).container().instance_id();
-
-            order_info_msg.orders[i].container.description.data =
-                                        order_info_ptr->orders(i).container().description();
-
-            order_info_msg.orders[i].quantity_delivered.data =
-                                        order_info_ptr->orders(i).quantity_delivered();
-
-            order_info_msg.orders[i].quantity_requested.data =
-                                        order_info_ptr->orders(i).quantity_requested();
-
-            order_info_msg.orders[i].destination.type.data =
-                                        order_info_ptr->orders(i).destination().type();
-
-            order_info_msg.orders[i].destination.instance_id.data =
-                                        order_info_ptr->orders(i).destination().instance_id();
-
-            order_info_msg.orders[i].destination.description.data =
-                                        order_info_ptr->orders(i).destination().description();
-
-            order_info_msg.orders[i].source.type.data =
-                                        order_info_ptr->orders(i).source().type();
-
-            order_info_msg.orders[i].source.instance_id.data =
-                                        order_info_ptr->orders(i).source().instance_id();
-
-            order_info_msg.orders[i].source.description.data =
-                                        order_info_ptr->orders(i).source().description();
-
-            order_info_msg.orders[i].processing_team.data =
-                                        order_info_ptr->orders(i).processing_team();
-
-            order_info_msg.orders[i].wait_time.data.sec =
-                                        order_info_ptr->orders(i).wait_time().sec();
-
-            order_info_msg.orders[i].wait_time.data.nsec =
-                                        order_info_ptr->orders(i).wait_time().nsec();
-
-            order_info_msg.orders[i].orientation.data =
-                                        order_info_ptr->orders(i).orientation();
+            }
         }
 
-        order_info_pub_.publish(order_info_msg);
+        task_info_pub_.publish(task_info_msg);
 
     }
 }
