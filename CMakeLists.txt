@@ -41,6 +41,9 @@ target_link_libraries(robot_example_ros
    ${Boost_LIBRARIES}
 )
 
+add_dependencies(robot_example_ros atwork_ros_msgs_generate_messages_cpp)
+
+
 install(
   DIRECTORY ros/include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
