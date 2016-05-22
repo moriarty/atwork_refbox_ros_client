@@ -8,9 +8,6 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
     readParameters();
 
     //Publishers
-    attention_message_pub_ = nh_.advertise<atwork_ros_msgs::AttentionMessage> (
-                            "attention_message", 10);
-
     benchmark_state_pub_ = nh_.advertise<atwork_ros_msgs::BenchmarkState> (
                             "benchmark_state", 10);
 
@@ -23,13 +20,13 @@ RobotExampleROS::RobotExampleROS(const ros::NodeHandle &nh):
 
     //Subscribers
     conveyor_belt_command_sub_ = nh_.subscribe<atwork_ros_msgs::TriggeredConveyorBeltCommand>(
-                        "conveyor_belt_command", 1000, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
+                        "conveyor_belt_command", 10, &RobotExampleROS::TriggeredConveyorBeltCommandCB, this);
 
     logging_status_sub_ = nh_.subscribe<atwork_ros_msgs::LoggingStatus>(
-                        "logging_status", 1000, &RobotExampleROS::LoggingStatusCB, this);
+                        "logging_status", 10, &RobotExampleROS::LoggingStatusCB, this);
 
-    transaction_sub_ = nh_.subscribe<atwork_ros_msgs::Transaction>(
-                        "inventory_transaction", 1000, &RobotExampleROS::InventoryTransactionCB, this);
+    robot_status_report_sub_ = nh_.subscribe<atwork_ros_msgs::RobotStatusReport>(
+                        "robot_status_report", 10, &RobotExampleROS::RobotStatusReportCB, this);
 
     initializeRobot();
 }
@@ -41,6 +38,7 @@ RobotExampleROS::~RobotExampleROS()
 }
 
 
+/**
 void RobotExampleROS::InventoryTransactionCB(atwork_ros_msgs::Transaction msg)
 {
     //create a new message
@@ -72,6 +70,7 @@ void RobotExampleROS::InventoryTransactionCB(atwork_ros_msgs::Transaction msg)
     //send the Message over team peer
     peer_team_->send(inventory_transaction);
 }
+*/
 
 void RobotExampleROS::LoggingStatusCB(atwork_ros_msgs::LoggingStatus msg)
 {
@@ -104,6 +103,23 @@ void RobotExampleROS::TriggeredConveyorBeltCommandCB(atwork_ros_msgs::TriggeredC
     peer_team_->send(conveyor_belt_command);
 }
 
+void RobotExampleROS::RobotStatusReportCB(atwork_ros_msgs::RobotStatusReport msg)
+{
+   // create a new message
+   std::shared_ptr<RobotStatusReport> robot_status_report(new RobotStatusReport);
+
+   // fill the message
+   for(uint i=0; i<msg.status.size(); ++i)
+   {
+       const atwork_ros_msgs::RobotStatus &status = msg.status[i];
+       atwork_pb_msgs::RobotStatus* robot_status = robot_status_report->add_status();
+       robot_status->set_capability((atwork_pb_msgs::RobotStatus_Capability)status.capability.data);
+       robot_status->set_functionality(status.functionality.data);
+       robot_status->set_meta_data(status.meta_data.data);
+   }
+   // send the message over team peer
+   peer_team_->send(robot_status_report);
+}
 void RobotExampleROS::readParameters()
 {
     ros::param::param<bool>("~remote_refbox", remote_refbox_, false);
@@ -155,12 +171,12 @@ void RobotExampleROS::initializeRobot()
     //create internal message handler
     MessageRegister &message_register = peer_public_->message_register();
     //added messagetype to the handler
-    message_register.add_message_type<AttentionMessage>();
     message_register.add_message_type<BeaconSignal>();
     message_register.add_message_type<BenchmarkState>();
     message_register.add_message_type<Inventory>();
     message_register.add_message_type<TaskInfo>();
     message_register.add_message_type<RobotInfo>();
+    message_register.add_message_type<RobotStatusReport>();
     message_register.add_message_type<VersionInfo>();
     message_register.add_message_type<TriggeredConveyorBeltStatus>();
     message_register.add_message_type<TriggeredConveyorBeltCommand>();
@@ -230,129 +246,87 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                     uint16_t component_id, uint16_t msg_type,
                     std::shared_ptr<google::protobuf::Message> msg)
 {
-    std::shared_ptr<AttentionMessage> attention_msg_ptr;
-
     std::shared_ptr<BenchmarkState> benchmark_state_ptr;
-
     std::shared_ptr<TriggeredConveyorBeltStatus> conveyor_belt_status_ptr;
-
     std::shared_ptr<Inventory> inventory_pub_ptr;
-
     std::shared_ptr<TaskInfo> task_info_ptr;
-
-    if ((attention_msg_ptr = std::dynamic_pointer_cast<AttentionMessage>(msg)))
-    {
-        atwork_ros_msgs::AttentionMessage attention_msg;
-
-        attention_msg.message.data      = attention_msg_ptr->message();
-        attention_msg.time_to_show.data = attention_msg_ptr->time_to_show();
-        attention_msg.team.data         = attention_msg_ptr->team();
-
-        attention_message_pub_.publish(attention_msg);
-    } 
     
-    else if ((benchmark_state_ptr = std::dynamic_pointer_cast<BenchmarkState>(msg))) 
+    if ((benchmark_state_ptr = std::dynamic_pointer_cast<BenchmarkState>(msg)))
     {
-
         atwork_ros_msgs::BenchmarkState benchmark_state_msg;
-
         benchmark_state_msg.benchmark_time.data.sec =
-                                        benchmark_state_ptr->benchmark_time().sec();
+            benchmark_state_ptr->benchmark_time().sec();
         benchmark_state_msg.benchmark_time.data.nsec =
-                                        benchmark_state_ptr->benchmark_time().nsec();
+            benchmark_state_ptr->benchmark_time().nsec();
         benchmark_state_msg.state.data =
-                                        benchmark_state_ptr->state();
+            benchmark_state_ptr->state();
         benchmark_state_msg.phase.data =
-                                        benchmark_state_ptr->phase();
+            benchmark_state_ptr->phase();
         benchmark_state_msg.scenario.type.data =
-                                        benchmark_state_ptr->scenario().type();
+            benchmark_state_ptr->scenario().type();
         benchmark_state_msg.scenario.type_id.data =
-                                        benchmark_state_ptr->scenario().type_id();
+            benchmark_state_ptr->scenario().type_id();
         benchmark_state_msg.scenario.description.data =
-                                        benchmark_state_ptr->scenario().description();
+            benchmark_state_ptr->scenario().description();
 
         benchmark_state_msg.known_teams.resize(benchmark_state_ptr->known_teams().size());
-
         for(int i=0; i < benchmark_state_ptr->known_teams().size(); i++) {
             benchmark_state_msg.known_teams[i].data =
-                                        benchmark_state_ptr->known_teams(i);
+                benchmark_state_ptr->known_teams(i);
         }
 
         benchmark_state_msg.connected_teams.resize(benchmark_state_ptr->connected_teams().size());
-
         for(int i=0; i < benchmark_state_ptr->connected_teams().size(); i++) {
             benchmark_state_msg.connected_teams[i].data =
-                                        benchmark_state_ptr->connected_teams(i);
+                benchmark_state_ptr->connected_teams(i);
         }
 
         benchmark_state_pub_.publish(benchmark_state_msg);
-
     }
-
     else if ((conveyor_belt_status_ptr = std::dynamic_pointer_cast<TriggeredConveyorBeltStatus>(msg))) {
-
         atwork_ros_msgs::TriggeredConveyorBeltStatus conveyor_belt_status_msg;
-
         conveyor_belt_status_msg.state.data = conveyor_belt_status_ptr->state();
-
         conveyor_belt_status_msg.cycle.data = conveyor_belt_status_ptr->cycle();
 
         conveyor_belt_status_pub_.publish(conveyor_belt_status_msg);
-
     }
-    
     else if ((inventory_pub_ptr = std::dynamic_pointer_cast<Inventory>(msg))) {
-
         atwork_ros_msgs::Inventory inventory_msg;
-
         inventory_msg.items.resize(inventory_pub_ptr->items().size());
 
         for(int i=0; i < inventory_pub_ptr->items().size(); i++) {
-
             inventory_msg.items[i].object.type.data =
-                                        inventory_pub_ptr->items(i).object().type();
-
+                inventory_pub_ptr->items(i).object().type();
             inventory_msg.items[i].object.type_id.data =
-                                        inventory_pub_ptr->items(i).object().type_id();
-
+                inventory_pub_ptr->items(i).object().type_id();
             inventory_msg.items[i].object.instance_id.data =
-                                        inventory_pub_ptr->items(i).object().instance_id();
-
+                inventory_pub_ptr->items(i).object().instance_id();
             inventory_msg.items[i].object.description.data =
-                                        inventory_pub_ptr->items(i).object().description();
-
+                inventory_pub_ptr->items(i).object().description();
             inventory_msg.items[i].quantity.data =
-                                        inventory_pub_ptr->items(i).quantity();
-
+                inventory_pub_ptr->items(i).quantity();
             inventory_msg.items[i].container.type.data =
-                                        inventory_pub_ptr->items(i).container().type();
-
+                inventory_pub_ptr->items(i).container().type();
             inventory_msg.items[i].container.type_id.data =
-                                        inventory_pub_ptr->items(i).container().type_id();
-
+                inventory_pub_ptr->items(i).container().type_id();
             inventory_msg.items[i].container.instance_id.data =
-                                        inventory_pub_ptr->items(i).container().instance_id();
-
+                inventory_pub_ptr->items(i).container().instance_id();
             inventory_msg.items[i].container.description.data =
-                                        inventory_pub_ptr->items(i).container().description();
-
+                inventory_pub_ptr->items(i).container().description();
             inventory_msg.items[i].location.type.data =
-                                        inventory_pub_ptr->items(i).location().type();
-
+                inventory_pub_ptr->items(i).location().type();
             inventory_msg.items[i].location.instance_id.data =
-                                        inventory_pub_ptr->items(i).location().instance_id();
-
+                inventory_pub_ptr->items(i).location().instance_id();
             inventory_msg.items[i].location.description.data =
-                                        inventory_pub_ptr->items(i).location().description();
+                inventory_pub_ptr->items(i).location().description();
         }
-
         inventory_pub_.publish(inventory_msg);
 
-    }  else if ((task_info_ptr = std::dynamic_pointer_cast<TaskInfo>(msg))) {
+    }
+    else if ((task_info_ptr = std::dynamic_pointer_cast<TaskInfo>(msg))) {
         atwork_ros_msgs::TaskInfo task_info_msg;
 
         task_info_msg.tasks.resize(task_info_ptr->tasks().size());
-
         for(int i=0; i < task_info_ptr->tasks().size(); i++) {
             const atwork_pb_msgs::Task &task = task_info_ptr->tasks(i);
             task_info_msg.tasks[i].id.data = task.id();
@@ -415,11 +389,8 @@ void RobotExampleROS::handleMessage(boost::asio::ip::udp::endpoint &sender,
                 break;
                 default:
                     ROS_INFO("TaskInfo Default?");
-
             }
         }
-
         task_info_pub_.publish(task_info_msg);
-
     }
 }

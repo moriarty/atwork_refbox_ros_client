@@ -2,19 +2,18 @@
 #include <ros/ros.h>
 #include <protobuf_comm/peer.h>
 
-#include <atwork_pb_msgs/AttentionMessage.pb.h>
 #include <atwork_pb_msgs/BeaconSignal.pb.h>
 #include <atwork_pb_msgs/BenchmarkState.pb.h>
 #include <atwork_pb_msgs/ConveyorBelt.pb.h>
 #include <atwork_pb_msgs/Inventory.pb.h>
 #include <atwork_pb_msgs/TaskInfo.pb.h>
 #include <atwork_pb_msgs/RobotInfo.pb.h>
+#include <atwork_pb_msgs/RobotStatusReport.pb.h>
 #include <atwork_pb_msgs/Time.pb.h>
 #include <atwork_pb_msgs/VersionInfo.pb.h>
 #include <atwork_pb_msgs/LoggingStatus.pb.h>
 
 //publisher
-#include <atwork_ros_msgs/AttentionMessage.h>
 #include <atwork_ros_msgs/BenchmarkState.h>
 #include <atwork_ros_msgs/TriggeredConveyorBeltStatus.h>
 #include <atwork_ros_msgs/Inventory.h>
@@ -24,7 +23,7 @@
 // subscribers
 #include <atwork_ros_msgs/TriggeredConveyorBeltCommand.h>
 #include <atwork_ros_msgs/LoggingStatus.h>
-#include <atwork_ros_msgs/Transaction.h>
+#include <atwork_ros_msgs/RobotStatusReport.h>
 
 #include <boost/asio.hpp>
 #include <boost/date_time.hpp>
@@ -105,7 +104,7 @@ class RobotExampleROS
 
         void LoggingStatusCB(atwork_ros_msgs::LoggingStatus msg);
 
-        void InventoryTransactionCB(atwork_ros_msgs::Transaction msg);
+        void RobotStatusReportCB(atwork_ros_msgs::RobotStatusReport msg);
 
     private:
         /**
@@ -141,7 +140,7 @@ class RobotExampleROS
         /**
          * Publishers
          */
-        ros::Publisher attention_message_pub_;
+        //ros::Publisher attention_message_pub_;
 
         ros::Publisher benchmark_state_pub_;
 
@@ -158,7 +157,7 @@ class RobotExampleROS
 
         ros::Subscriber logging_status_sub_;
 
-        ros::Subscriber transaction_sub_;
+        ros::Subscriber robot_status_report_sub_;
 
         /**
          * Parameter to check if refbox is running on local or another machine.
